@@ -112,7 +112,7 @@ const updateReview = async function (req, res) {
                     }
                 }
 
-                const updatedReview = await reviewModel.findOneAndUpdate({ _id: reviewId }, { reviewedBy: reviewedBy, review: review, rating: rating }, { new: true }).select({ __v: 0 })
+                const updatedReview = await reviewModel.findOneAndUpdate({ _id: reviewId }, {...data}, { new: true }).select({ __v: 0 })
                 return res.status(200).send({ status: true, message: 'Review updated', data: updatedReview });
             }
             else {
@@ -145,12 +145,12 @@ const deleteReview = async function (req, res) {
 
         const findBook = await bookModel.findOne({ _id: bookId, isDeleted: false })
         if (!findBook) {
-            return res.status(400).send({ status: false, message: "No Book Is Present with this filter" })
+            return res.status(400).send({ status: false, message: "No Book Is Present with this id" })
         }
 
         const findReview = await reviewModel.findOne({ _id: reviewId, isDeleted: false })
         if (!findReview) {
-            return res.status(400).send({ status: false, message: "No Review Is Present with this filter" })
+            return res.status(400).send({ status: false, message: "No Review Is Present with this id" })
         }
 
 
