@@ -37,17 +37,17 @@ const createBooks = async function (req, res) {
 
         if (!isValid(userId)) { return res.status(400).send({ status: false, message: 'User Id is required' }) }
 
+        if (!isValidObjectId(userId)) { return res.status(400).send({ status: false, message: 'Please provide a valid userId' }) }
+
         let isValidid = await userModel.findOne({ _id: userId })
         if (!isValidid) { return res.status(400).send({ status: false, message: 'There is no such id in database, Please provide a valid User Id' }) }
 
-        if (!isValidObjectId(userId)) { return res.status(400).send({ status: false, message: 'Please provide a valid userId' }) }
-
         if (!isValid(ISBN)) { return res.status(400).send({ status: false, message: 'ISBN is required' }) }
+
+        if (!isRightFormatISBN(ISBN)) { return res.status(400).send({ status: false, message: 'Please provide a valid ISBN' }) }
 
         let isUniqueISBN = await bookModel.findOne({ ISBN: ISBN })
         if (isUniqueISBN) { return res.status(400).send({ status: false, message: 'ISBN already exist, please check your input' }) }
-
-        if (!isRightFormatISBN(ISBN)) { return res.status(400).send({ status: false, message: 'Please provide a valid ISBN' }) }
 
         if (!isValid(category)) { return res.status(400).send({ status: false, message: 'Category is required' }) }
  
@@ -136,6 +136,8 @@ const updateBooks = async function (req, res) {
         let book_Id = req.params.bookId
         let data = req.body
         if (!book_Id) return res.status(400).send({ status: false, message: "Book Id is required" })
+
+        if (Object.keys(data) == 0) { return res.status(400).send({ status: false, message: 'No data provided' }) }
 
         if(!isValidObjectId(book_Id)) { return res.status(400).send({ status: false, message: 'please provide a valid id' })}
 

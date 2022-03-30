@@ -20,7 +20,7 @@ const createReview = async function (req, res) {
         let id = req.params.bookId;
         const { bookId, rating } = data
 
-        if(!isValidObjectId(id)) { return res.status(400).send({ status: false, message: 'please provide a valid id' })}
+        if (!isValidObjectId(id)) { return res.status(400).send({ status: false, message: 'please provide a valid id' }) }
 
         if (id != bookId) { return res.status(400).send({ status: false, message: 'Please provide a valid book Id' }) }
 
@@ -112,7 +112,7 @@ const updateReview = async function (req, res) {
                     }
                 }
 
-                const updatedReview = await reviewModel.findOneAndUpdate({ _id: reviewId }, {...data}, { new: true }).select({ __v: 0 })
+                const updatedReview = await reviewModel.findOneAndUpdate({ _id: reviewId }, { ...data }, { new: true }).select({ __v: 0 })
                 return res.status(200).send({ status: true, message: 'Review updated', data: updatedReview });
             }
             else {
@@ -132,42 +132,32 @@ const deleteReview = async function (req, res) {
         let bookId = req.params.bookId
         let reviewId = req.params.reviewId
 
-        if (Object.keys(bookId) == 0) {
-            return res.status(400).send({ status: false, message: "Please provide book Id" })
-        }
-        if (Object.keys(reviewId) == 0) {
-            return res.status(400).send({ status: false, message: "please provide review Id" })
-        }
+        if (Object.keys(bookId) == 0) { return res.status(400).send({ status: false, message: "Please provide book Id" })}
 
-        if(!isValidObjectId(bookId)) { return res.status(400).send({ status: false, message: 'please provide a valid Book id' })}
+        if (Object.keys(reviewId) == 0) { return res.status(400).send({ status: false, message: "please provide review Id" })}
 
-        if(!isValidObjectId(reviewId)) { return res.status(400).send({ status: false, message: 'please provide a valid Review id' })}
+        if (!isValidObjectId(bookId)) { return res.status(400).send({ status: false, message: 'please provide a valid Book id' }) }
+
+        if (!isValidObjectId(reviewId)) { return res.status(400).send({ status: false, message: 'please provide a valid Review id' }) }
 
         const findBook = await bookModel.findOne({ _id: bookId, isDeleted: false })
-        if (!findBook) {
-            return res.status(400).send({ status: false, message: "No Book Is Present with this id" })
-        }
+        if (!findBook) { return res.status(404).send({ status: false, message: "No Book Is Present with this id" })}
 
         const findReview = await reviewModel.findOne({ _id: reviewId, isDeleted: false })
-        if (!findReview) {
-            return res.status(400).send({ status: false, message: "No Review Is Present with this id" })
-        }
+        if (!findReview) { return res.status(404).send({ status: false, message: "No Review Is Present with this id" })}
+
+        if (findBook.isDeleted == true) { return res.status(400).send({ status: false, message: "Book has already been deleted" }) }
+
+        if (findReview.isDeleted == true) { return res.status(400).send({ status: false, message: "Review has already been deleted" }) }
+
+        const deleteReviewDetails = await reviewModel.findOneAndUpdate({ _id: reviewId }, { isDeleted: true, deletedAt: new Date() }, { new: true })
+
+        const updatedBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: -1 } })
+
+        return res.status(200).send({ status: true, message: "Review deleted successfully.", data: deleteReviewDetails })
 
 
-        if (findBook.isDeleted == false) {
-            if (findReview.isDeleted == false) {
-                const deleteReviewDetails = await reviewModel.findOneAndUpdate({ _id: reviewId }, { isDeleted: true, deletedAt: new Date() }, { new: true })
 
-
-                if (deleteReviewDetails) {
-                    await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: -1 } })
-                }
-                return res.status(200).send({ status: true, message: "Review deleted successfully.", data: deleteReviewDetails })
-
-            }
-        } else {
-            return res.status(400).send({ status: false, message: "Unable to delete .Book has been already deleted" })
-        }
     }
     catch (error) {
         console.log(err)
