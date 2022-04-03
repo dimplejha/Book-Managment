@@ -19,26 +19,25 @@ const authentication = async function (req, res, next) {
 
 const authorisation = async function (req, res, next) {
     try {
-        let token = req.headers["x-api-key"];
-        let decodedtoken = jwt.verify(token, "Secret-Key")
-
-        let toBeupdatedbookId = req.params.bookId
-        if (toBeupdatedbookId) {
-
-            let updatinguserId = await bookModel.find({ _id: toBeupdatedbookId }).select({ userId: 1, _id: 0 })
-            let userId = updatinguserId.map(x => x.userId)
-
-            let id = decodedtoken.userId
-            if (id != userId) return res.status(403).send({ status: false, msg: "You are not authorised to perform this task" })
+        let token = req.headers["x-api-key"]
+        let decodedToken = jwt.verify(token, "Secret-Key")
+        let bookId = req.params.bookId
+        if (bookId) {
+            let bookFound = await bookModel.findById(bookId).select({ userId: 1 })
+            userId = bookFound.userId
+            
+            if (userId != decodedToken.userId) {
+                
+                return res.status(403).send({ status: false, message: "user not authorised" })
+            }
         }
         else {
-            toBeupdatedbookId = req.body.userId
-            let id = decodedtoken.userId
-
-            if (id != toBeupdatedbookId) return res.status(403).send({ status: false, msg: 'You are not authorised to perform this task' })
+            let userId = req.body.userId
+            if (decodedToken.userId != userId) {
+                return res.status(403).send({ status: false, message: "user not authorised to perform task" })
+            }
         }
-
-        next();
+        next()
     }
     catch (error) {
         console.log(error)

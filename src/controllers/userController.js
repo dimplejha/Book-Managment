@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const isValid = function (value) {
     if (typeof (value) === undefined || typeof (value) === null) { return false }
-    if ((value).length == 0) { return false }
+    //if ((value).length == 0) { return false }
     if (typeof (value) === "string" && (value).length > 0) { return true }
 }
 
@@ -73,7 +73,7 @@ const login = async function (req, res) {
 
         if (!isValid(pass)) { return res.status(400).send({ status: false, message: "Password is required" }) }
 
-        if (pass.length < 8 || pass.length > 15) { return res.status(400), send({ status: false, message: 'Password should be of minimum 8 characters & maximum 15 characters' }) }
+        if (pass.length < 8 || pass.length > 15) { return res.status(400).send({ status: false, message: 'Password should be of minimum 8 characters & maximum 15 characters' }) }
         //validation ends
 
         const mailMatch = await userModel.findOne({ email: mail })

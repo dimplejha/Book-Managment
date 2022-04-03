@@ -143,6 +143,7 @@
     "registry-auth-token": "^4.2.1",
     "registry-url": "^5.1.0",
     "require-at": "^1.0.6",
+    "require-stack": "^1.0.2",
     "responselike": "^1.0.2",
     "safe-buffer": "^5.1.2",
     "safer-buffer": "^2.1.2",
@@ -187,7 +188,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/index"
-
   },
   "repository": {
     "type": "git",

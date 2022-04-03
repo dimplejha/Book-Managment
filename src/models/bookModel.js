@@ -15,7 +15,7 @@ const bookSchema = new mongoose.Schema({
     },
     userId: {
         type: ObjectId,
-        ref: "bookManagementPrtoject_user",
+        ref: "userModel",
         required: "User Id is required",
         trim: true
     },
@@ -48,4 +48,4 @@ const bookSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model('bookManagementProject_book', bookSchema);
+module.exports = mongoose.model('bookModel', bookSchema);

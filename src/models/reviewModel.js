@@ -5,7 +5,7 @@ const reviewSchema = new mongoose.Schema({
     bookId: {
         type: ObjectId,
         required: 'Book id is required',
-        ref: 'bookManagementProject_book'
+        ref: 'bookModel'
     },
     reviewedBy: {
         type: String,
@@ -28,4 +28,4 @@ const reviewSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model('bookManagementProject_review', reviewSchema);
+module.exports = mongoose.model('reviewModel', reviewSchema);

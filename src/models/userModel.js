@@ -4,12 +4,12 @@ const userSchema = new mongoose.Schema({
     title: {
         type: String,
         required: 'Title is required',
-        enum: ["Mr", "Mrs", "Miss"],
+        enum: ["Mr", "Mrs", "Miss", "Ms", "mr", "mrs", "miss", "ms"],
         trim: true
     },
     name: {
         type: String,
-        required:  'Name is required',
+        required:  [true, "User Name Is Required"],
         trim: true
     },
     phone: {
@@ -43,4 +43,4 @@ const userSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model('bookManagementProject_user', userSchema);
+module.exports = mongoose.model('userModel', userSchema);
